@@ -1,0 +1,7 @@
+/api-service/target/
+/user-service/target/
+/report-service/target/
+/user-service/.idea/
+/report-service/.idea/
+/api-service/.idea/
+/.idea/
