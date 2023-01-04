@@ -4,18 +4,13 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
-import org.springframework.hateoas.config.HypermediaRestTemplateConfigurer;
 import org.springframework.hateoas.config.HypermediaWebClientConfigurer;
-import org.springframework.hateoas.support.WebStack;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.time.Duration;
 
@@ -29,16 +24,7 @@ public class APIServiceApplication {
 
     @Bean
     WebClientCustomizer hypermediaWebClientCustomizer(HypermediaWebClientConfigurer configurer) {
-        return webClientBuilder -> {
-            configurer.registerHypermediaTypes(webClientBuilder);
-        };
-    }
-
-    @Bean
-    RestTemplateCustomizer hypermediaRestTemplateCustomizer(HypermediaRestTemplateConfigurer configurer) {
-        return restTemplate -> {
-            configurer.registerHypermediaTypes(restTemplate);
-        };
+        return configurer::registerHypermediaTypes;
     }
 
     @Bean

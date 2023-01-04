@@ -1,8 +1,6 @@
 package com.demo.api;
 
 import com.demo.api.dto.ReportDTO;
-import com.demo.client.dto.Report;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

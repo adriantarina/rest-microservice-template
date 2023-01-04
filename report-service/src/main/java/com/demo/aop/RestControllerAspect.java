@@ -7,11 +7,18 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.server.RequestPath;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.util.ServletRequestPathUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Aspect
 @Component
@@ -41,10 +48,7 @@ public class RestControllerAspect {
     }
 
     private String getEndpoint(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-
-        GetMapping annotation = method.getAnnotation(GetMapping.class);
-        return annotation.value()[0];
+        return ((RequestPath)RequestContextHolder.getRequestAttributes().getAttribute(ServletRequestPathUtils.PATH_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST))
+                .pathWithinApplication().value();
     }
 }

@@ -1,21 +1,19 @@
 package com.demo;
 
 import com.demo.report.Report;
-import com.demo.report.dao.ReportDao;
+import com.demo.report.repository.ReportRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.LocalDate;
 
 @Configuration
 public class LoadDatabase {
 
     @Bean
-    CommandLineRunner initDatabase(ReportDao reportDao) {
+    CommandLineRunner initDatabase(ReportRepository reportRepository) {
         return args -> {
-            reportDao.save(new Report("Transaction Report", 1l, 2l));
-            reportDao.save(new Report("username2", 1l, 2l));
+            reportRepository.save(new Report("Transaction Report1", 1l, 2l));
+            reportRepository.save(new Report("Transaction Report2", 1l, 2l));
         };
     }
 }

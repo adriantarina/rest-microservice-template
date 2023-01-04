@@ -1,21 +1,14 @@
 package com.demo.api;
 
 import com.demo.api.dto.ReportDTO;
+import com.demo.client.dto.Report;
 import com.demo.service.ReportService;
-import org.springdoc.core.converters.models.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -32,15 +25,30 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping("/reports")
-    public CollectionModel<EntityModel<ReportDTO>> getAll() {
-        List<ReportDTO> reports = reportService.getAll();
-        Page<ReportDTO> reportDTOS = new PageImpl<>(reports);
+    public ResponseEntity<?> getAll(Pageable pageable) {
+        Page<ReportDTO> reports = reportService.getAll(pageable);
 
-        return pagedResourcesAssembler.toModel(reportDTOS, reportAssembler);
+        return ResponseEntity.ok(pagedResourcesAssembler.toModel(reports, reportAssembler));
     }
 
     @GetMapping("/reports/{id}")
-    public EntityModel<ReportDTO> get(@PathVariable Long id) {
-        return EntityModel.of(new ReportDTO(1L, "", null, null, null));
+    public ResponseEntity<?> get(@PathVariable Long id) {
+        return ResponseEntity.ok(reportAssembler.toModel(reportService.get(id)));
+    }
+
+    @PostMapping(value = "/reports")
+    public ResponseEntity<?> newReport(@RequestBody Report report) {
+        return ResponseEntity.ok(reportAssembler.toModel(reportService.save(report)));
+    }
+
+    @PutMapping(value = "/reports/{id}")
+    public ResponseEntity<?> updateReport(@RequestBody Report report, @PathVariable Long id) {
+        return ResponseEntity.ok(reportAssembler.toModel(reportService.update(report, id)));
+    }
+
+    @DeleteMapping(value = "/reports/{id}")
+    public ResponseEntity<?> deleteReport(@PathVariable Long id) {
+        reportService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

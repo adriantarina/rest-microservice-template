@@ -1,6 +1,9 @@
 package com.demo.api;
 
 import com.demo.report.Report;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -14,7 +17,11 @@ public class ReportAssembler implements RepresentationModelAssembler<Report, Ent
 
     @Override
     public EntityModel<Report> toModel(Report report) {
-        return EntityModel.of(report, linkTo(methodOn(ReportController.class).get(report.getId())).withSelfRel());
+        return EntityModel.of(report,
+                linkTo(methodOn(ReportController.class).get(report.getId())).withSelfRel(),
+                linkTo(methodOn(ReportController.class).updateReport(report, report.getId())).withRel("edit"),
+                linkTo(methodOn(ReportController.class).deleteReport(report.getId())).withRel("delete"),
+                linkTo(methodOn(ReportController.class).all(Page.empty().getPageable())).withRel("list"));
     }
 
 }
